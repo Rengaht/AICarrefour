@@ -38,7 +38,10 @@ function getContour(pixels, width, height, lineHeight){
 
 function init(){
 
-    const _param_keys=['textSize', 'lineHeight', 'color1', 'color2'];
+    // set defulat text
+    document.getElementById("_input_text").value=__demo_text;
+    
+    const _param_keys=['textSize', 'lineHeight','speed', 'color1', 'color2','text', 'direction'];
 
     let find=document.getElementsByTagName("canvas");
     if(find.length==0){
@@ -58,13 +61,12 @@ function init(){
     
     
     // get text
-    let queryString = window.location.search;
-    let urlParams = new URLSearchParams(queryString);
-    let text=urlParams.get("you_text");
+    // let queryString = window.location.search;
+    // let urlParams = new URLSearchParams(queryString);
+    // let text=urlParams.get("you_text");
+   
 
-    if(!text || text.length==0){
-        text=__demo_text;
-    }
+    
     // let lines=text.split("，").join('，,').split("。").join('。,').split(',');
     
     //text=lines.join("，\n");
@@ -79,8 +81,14 @@ function init(){
         let params={};
         _param_keys.forEach(key=>{
             let val=document.getElementById(`_input_${key}`).value;
-            params[key]=parseInt(val) || val;
+            params[key]=parseFloat(val) || val;
         });
+
+
+        let text=params.text;
+        if(!text || text.length==0){
+            return;
+        }
 
         if(!pixels){
             pixels = loadPixels(image, canvas.width, canvas.height);
@@ -89,29 +97,40 @@ function init(){
     
        
         ctx.clearRect(0,0, canvas.width, canvas.height);
-        ctx.drawImage(image,0,0,image.width/image.height*canvas.height, canvas.height);
+        // ctx.drawImage(image,0,0,image.width/image.height*canvas.height, canvas.height);
 
         ctx.font = `${params.textSize}px ${__font}`;
 
-        var gradient=ctx.createLinearGradient(0,0,0,canvas.height);
-        gradient.addColorStop("0", params.color1);
-        gradient.addColorStop("1.0", params.color2);
+        let p=(new Date()).getTime()/5000*params.speed;
+        let pc=Math.abs(Math.sin(p/2.0));
+
+        var gradient=params.direction=="radial"? ctx.createRadialGradient(0,canvas.height/2,0,0,canvas.height/2,canvas.width): ctx.createLinearGradient(0,0,0,canvas.height+params.lineHeight);
+        gradient.addColorStop('0', params.color2);
+        gradient.addColorStop(pc, params.color1);
+        gradient.addColorStop('1.0', params.color2);
 
         ctx.fillStyle=gradient;
         
-        let p=(new Date()).getTime()/1000;
         let start=0;
 
         for(var index=0; index < contour.length; index++){
+
+            if(start>=text.length) start=0;
+
             // let line=lines[index%lines.length];
             // let wid=len*1.8;
-            let wid=Math.floor((canvas.width-contour[index])/params.textSize);
-            for(var i=0;i<wid;++i){
-                let char=text.charAt(start%text.length);
-                let pp=Math.abs(Math.sin(index/contour.length*Math.PI+p));
+            let wid=Math.floor((canvas.width-contour[index])/params.textSize/1.2);
+            let sub=text.substring(start, start+wid);
+            let cut=Math.max(sub.lastIndexOf("，"), sub.lastIndexOf("。"));
+            let trim=sub.substring(0,cut+1);
+            start+=trim.length;
+
+            for(var i=0;i<trim.length;++i){
+                let char=trim.charAt(i);
+                let pp=0.4+0.8*Math.abs(Math.sin(index/contour.length*Math.PI+p));
                 ctx.fillText(char,contour[index]+i*params.textSize*pp, (index+1)*params.lineHeight); 
 
-                start++;
+                // start++;
 
                 // if(start>text.length) break;
             }
