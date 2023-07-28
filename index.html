@@ -1,0 +1,33 @@
+<head>
+
+    <style>
+        body{
+            font-family: monospace;
+        }
+        #_controller{
+            display:flex;
+            flex-direction: column;
+            gap:10px;
+            padding:5px;
+            margin:25px 0px;
+
+            border:1px solid gray;
+        }
+        #_controller>div{
+            display:grid;
+            grid-template-columns: 20% 80%;
+        }
+    </style>
+</head>
+<body>
+    <script src="draw.js"></script>
+    
+    <div id="_controller">
+       <div> textSize <input id="_input_textSize" type="range" min="1" max="50" value="18"/> </div> 
+       <div> lineHeight <input id="_input_lineHeight" type="range" min="1" max="50" value="24"/> </div> 
+       
+       <div> color1 <input id="_input_color1" type="color" value="#ff00ff"/> </div> 
+       <div> color2 <input id="_input_color2" type="color" value="#ffff00" /> </div> 
+    </div>
+    <canvas width="600" height="600"></canvas>
+</body>
