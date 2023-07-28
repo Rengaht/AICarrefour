@@ -25,13 +25,15 @@
     <script src="draw.js"></script>
     
     <div id="_controller">
-        <div> textSize <input id="_input_textSize" type="range" min="1" max="50" value="18"/> </div> 
-        <div> lineHeight <input id="_input_lineHeight" type="range" min="1" max="50" value="24"/> </div> 
+        <!-- <div> textSize <input id="_input_textSize" type="range" min="1" max="50" value="18"/> </div> 
+        <div> lineHeight <input id="_input_lineHeight" type="range" min="1" max="50" value="24"/> </div>  -->
+        <div> spacing <input id="_input_spacing" type="range" min="0" max="10" value="5"/> </div> 
+        
         <div> speed <input id="_input_speed" type="range" min="1" max="10" value="5"/> </div> 
         
         <div> color1 <input id="_input_color1" type="color" value="#ff00ff"/> </div> 
         <div> color2 <input id="_input_color2" type="color" value="#ffff00" /> </div> 
-        <div> direction 
+        <div> gradient 
             <select id="_input_direction">
                 <option value="linear">linear</option>
                 <option value="radial">radial</option>                
@@ -42,6 +44,7 @@
             <textarea id="_input_text" rows="5" cols="40"></textarea>
         </div> 
 
+        <!-- <div> breakline <input id="_input_breakline" type="checkbox" checked value="checked"/> </div>  -->
         
        
     </div>
