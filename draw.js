@@ -2,6 +2,7 @@ const __demo_text="公寓大門外，供桌擺得齊，爸爸在旁邊，看著�
 const __font="sans-serif";
 const __seperator=["，","。",",","."];
 
+
 function loadPixels(img, width, height){
 
     let _canvas=document.createElement("canvas");
@@ -66,7 +67,27 @@ function init(){
 
     let id=2;//Math.floor(Math.random()*2)+1;
     image.src = `resources/face${id}.svg`;
-    
+
+    let _animation_id;
+
+    let imageinput=document.getElementById("_input_image");
+    imageinput.addEventListener('change', (event)=>{
+        
+        const file = event.target.files[0]; // 0 = get the first file
+        console.log('new image', file);
+
+        let url = window.URL.createObjectURL(file);
+        image.src = url;
+        
+        if(_animation_id) cancelAnimationFrame(_animation_id);
+
+        pixels=null;
+        contour=null;
+        prev_params=null;
+        
+        image.onload = drawText;
+    });
+
     
     // get text
     // let queryString = window.location.search;
@@ -177,7 +198,7 @@ function init(){
             // ctx.fillText(line, contour[index], (index+1)*params.lineHeight);
         }
         
-        requestAnimationFrame(drawText);
+        _animation_id=requestAnimationFrame(drawText);
     }
 
 }
