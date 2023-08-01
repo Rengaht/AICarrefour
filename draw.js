@@ -3,6 +3,16 @@ const __font="sans-serif";
 const __seperator=["，","。",",","."];
 
 
+const __color_sets=[
+    [],
+    ["#FFD804","#FFFF00",'#FF7600'],
+    ["#F73963","#FFFFFF",'#42F763'],
+    ["#FFB2FF","#FF3677",'#FBFF00'],
+    ["#FF5F00","#FFFFFF",'#FF00FC'],
+    ["#FF5F00","#CB25F0",'#FF00FC'],
+    ["#00FFFF","#F7FFB0",'#C3FFFF'],
+];
+
 function loadPixels(img, width, height){
 
     let _canvas=document.createElement("canvas");
@@ -50,7 +60,7 @@ function init(){
     // set defulat text
     document.getElementById("_input_text").value=__demo_text;
     
-    const _param_keys=['spacing','speed', 'color1', 'color2','text', 'direction'];
+    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction'];
 
     let find=document.getElementsByTagName("canvas");
     if(find.length==0){
@@ -84,8 +94,15 @@ function init(){
         pixels=null;
         contour=null;
         prev_params=null;
-        
+
         image.onload = drawText;
+    });
+
+    let colorset=document.getElementById("_input_colorset");
+    let _input_colors=[1,2,3].map(id=>document.getElementById(`_input_color${id}`));
+    colorset.addEventListener("change",(event)=>{
+        let val=parseInt(event.target.value);
+        for(var i=0;i<3;++i) _input_colors[i].value=__color_sets[val][i];
     });
 
     
@@ -153,9 +170,10 @@ function init(){
         let pc=Math.abs(Math.sin(p/2.0));
 
         var gradient=params.direction=="radial"? ctx.createRadialGradient(0,canvas.height/2,0,0,canvas.height/2,canvas.width): ctx.createLinearGradient(0,0,0,canvas.height+lineHeight);
-        gradient.addColorStop('0', params.color2);
-        gradient.addColorStop(pc, params.color1);
-        gradient.addColorStop('1.0', params.color2);
+        gradient.addColorStop('0', params.color1);
+        gradient.addColorStop(pc, params.color2);
+        // gradient.addColorStop(1-pc, params.color3);
+        gradient.addColorStop('1.0', params.color3);
 
         ctx.fillStyle=gradient;
         
