@@ -129,6 +129,7 @@ function getParameters(){
     if(val_params){
         val_params.innerHTML=Object.keys(params).map(key=>`${key} = ${params[key]}`).join('\n');
     }
+    console.log(params);
 
     return params;
 }
@@ -292,6 +293,8 @@ function init(params){
         if(snapshot){
             snapshot.src=dataURL;
         }
+
+        return dataURL;
     }
     
     return {
