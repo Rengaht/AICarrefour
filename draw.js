@@ -143,7 +143,13 @@ function onGoClick(){
 
 }
 function onSnapshotClick(){
-    window.__canvas_draw.getSnapshot();
+    let data_url=window.__canvas_draw?.getSnapshot();
+
+    let snapshot=document.getElementById("_img_snapshot");
+    if(snapshot){
+        snapshot.src=data_url;
+    }
+
 
 }
 
@@ -289,11 +295,7 @@ function init(params){
         }
 
         var dataURL=tmp_canvas.toDataURL();
-        let snapshot=document.getElementById("_img_snapshot");
-        if(snapshot){
-            snapshot.src=dataURL;
-        }
-
+        
         return dataURL;
     }
     
