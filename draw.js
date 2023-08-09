@@ -156,9 +156,9 @@ function onSnapshotClick(){
 function init(params){
 
     
-    let find=document.getElementsByTagName("canvas");
-    if(find.length==0){
-        console.error("Can't find canvas element");
+    let canvas=document.getElementById("_canvas_head");
+    if(!canvas){
+        console.error("Can't find element with id _canvas_head");
         return;
     }
 
@@ -167,7 +167,7 @@ function init(params){
         return;
     }
 
-    let canvas=find[0];
+    // let canvas=find[0];
     let ctx=canvas.getContext("2d");
 
     // load image
