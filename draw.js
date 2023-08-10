@@ -252,8 +252,8 @@ function init(params){
 
     function getSnapshot(){
         
-        if(!pixels || !contour){
-            console.error("image not loaded!");
+        if(!contour){
+            console.error("contour not loaded!");
             return;
         }
 
