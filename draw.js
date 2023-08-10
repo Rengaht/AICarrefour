@@ -136,7 +136,8 @@ function getParameters(){
 
 function onGoClick(){
 
-    if(window.__canvas_draw) cancelAnimationFrame(window.__canvas_draw._animation_id);
+    if(window.__canvas_draw) 
+        cancelAnimationFrame(window.__canvas_draw._animation_id);
 
     let p=getParameters();
     window.__canvas_draw=init(p);
@@ -230,7 +231,7 @@ function init(params){
             trim=lines[index];
             let spacing=Math.min((canvas.width-contour[index]-textSize*4)/(trim.length+2), textSize*2.0);
             
-            let pp=0.2+(0.9)*Math.min(1.0, Math.abs(1.7*Math.sin((1.0-index/contour.length)*Math.PI*0.5+0.5*Math.PI+p)));
+            let pp=0.2+(0.9)*Math.min(1.0, Math.abs(1.7*Math.sin((2.0-index/contour.length)*Math.PI*0.5+p)));
             // let span=params.staytime+5.0/params.speed+index*0.2;
                 
 
@@ -299,10 +300,15 @@ function init(params){
         return dataURL;
     }
     
-    return {
+
+    let output={
         getSnapshot: getSnapshot,
         animation_id: _animation_id,
     }
+    window.__canvas_draw=output;
+    
+    return output;
+
 }
 
 
@@ -311,5 +317,16 @@ function init(params){
 window.onload=()=>{
     
     intControl();
+
+    // init({
+    //     spacing : 5,
+    //     speed: 5,
+    //     color1: "#ffd804",
+    //     color2: "#ffff00",
+    //     color3: "#ff7600",
+    //     text: "公寓大門外，供桌擺得齊，爸爸在旁邊，看著我燒紙錢。特價傳單，家樂福的獻禮，微涼的晚風，帶走了我們的祈禱。煙火升起，照亮了這晚夜，我們在這裡，為中元節祈福。家樂福特價，供桌上的禮物，希望他們喜歡，這些我們的小心意。微涼的晚風，吹散了煙火，爸爸在旁邊，默默地看著我。供桌擺在公寓大門外，我們在這裡，為中元節祈福。",
+    //     direction: "linear",
+    //     faceset: 1,
+    // });
 
 };
