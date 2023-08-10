@@ -113,7 +113,7 @@ function intControl(){
 
 function getParameters(){
 
-    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset"];
+    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset", "boundary"];
 
     let params={};
     _param_keys.forEach(key=>{
@@ -201,6 +201,7 @@ function init(params){
         
     let pixels;
 
+    let boundary=params.boundary || canvas.width*0.1;
 
     function drawText(){
         
@@ -209,11 +210,11 @@ function init(params){
         
         if(!contour){
             if(!pixels){
-                pixels = loadPixels(image, canvas.width, canvas.height);
+                pixels = loadPixels(image, canvas.width-boundary*2, canvas.height-boundary*2);
             }
             
-            contour=getContour(pixels, canvas.width, canvas.height, lines.length);            
-            lineHeight=canvas.height/lines.length;
+            contour=getContour(pixels, canvas.width-boundary*2, canvas.height-boundary*2, lines.length);            
+            lineHeight=(canvas.height-boundary*2)/lines.length;
             textSize=lineHeight-params.spacing*2;
             
             pixels=null;
@@ -261,15 +262,15 @@ function init(params){
 
             if(index>=lines.length) break;
             trim=lines[index];
-            let spacing=Math.min((canvas.width-contour[index]-textSize*4)/(trim.length+2), textSize*2.0);
+            let spacing=Math.min((canvas.width-boundary*2-contour[index]-textSize*4)/(trim.length+2), textSize*2.0);
             
             let pp=0.2+(0.9)*Math.min(1.0, Math.abs(1.7*Math.sin((2.0-index/contour.length)*Math.PI*0.5+p)));
             // let span=params.staytime+5.0/params.speed+index*0.2;
                 
 
             for(var i=0;i<trim.length;++i){
-                let x=contour[index]+i*spacing*pp;
-                let y=(index+1)*lineHeight;
+                let x=contour[index]+i*spacing*pp+boundary;
+                let y=(index+1)*lineHeight+boundary;
 
                 if(params.direction=='radial'){
                     let lerp=Math.pow(x,2)+Math.pow(y-canvas.height/2.0,2);
@@ -314,6 +315,8 @@ function init(params){
         let pc=Math.abs(Math.sin(p/2.0));
 
         
+        let boundary=params.boundary || canvas.width*0.1;
+
 
         var gradient=params.direction=="radial"? tmp_ctx.createRadialGradient(0,tmp_canvas.height/2,0,0,tmp_canvas.height/2,tmp_canvas.width): ctx.createLinearGradient(0,0,0,tmp_canvas.height+lineHeight);
         gradient.addColorStop('0', params.color1);
@@ -330,7 +333,7 @@ function init(params){
 
             if(index>=lines.length) break;
             trim=lines[index];
-            let spacing=Math.min((tmp_canvas.width-contour[index]-textSize*4)/(trim.length+2), textSize*2.0);
+            let spacing=Math.min((tmp_canvas.width-boundary*2.0-contour[index]-textSize*4)/(trim.length+2), textSize*2.0);
             
             // let pp=1;//*Math.min(1.0, Math.abs(1.7*Math.sin(Math.PI*0.5+0.5*Math.PI)));
             // let span=params.staytime+5.0/params.speed+index*0.2;
@@ -338,7 +341,7 @@ function init(params){
 
             for(var i=0;i<trim.length;++i){
                 let char=trim.charAt(i);
-                tmp_ctx.fillText(char,contour[index]+i*spacing, (index+1)*lineHeight); 
+                tmp_ctx.fillText(char,contour[index]+i*spacing+boundary, (index+1)*lineHeight+boundary); 
 
             }
         }
