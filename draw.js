@@ -154,6 +154,19 @@ function onSnapshotClick(){
 
 }
 
+function lerpColor(a, b, amount) { 
+
+    var ah = parseInt(a.replace(/#/g, ''), 16),
+        ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+        bh = parseInt(b.replace(/#/g, ''), 16),
+        br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+        rr = ar + amount * (br - ar),
+        rg = ag + amount * (bg - ag),
+        rb = ab + amount * (bb - ab);
+
+    return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+}
+
 function init(params){
 
     
@@ -219,16 +232,30 @@ function init(params){
 
         
 
-        var gradient=params.direction=="radial"? ctx.createRadialGradient(0,canvas.height/2,0,0,canvas.height/2,canvas.width): ctx.createLinearGradient(0,0,0,canvas.height+lineHeight);
-        gradient.addColorStop('0', params.color1);
-        gradient.addColorStop(pc, params.color2);
+        // var gradient=params.direction=="radial"? ctx.createRadialGradient(0,canvas.height/2,0,0,canvas.height/2,canvas.width): ctx.createLinearGradient(0,0,0,canvas.height+lineHeight);
+        // gradient.addColorStop('0', params.color1);
+        // // gradient.addColorStop(pc, params.color2);
         // gradient.addColorStop(1-pc, params.color3);
-        gradient.addColorStop('1.0', params.color3);
-
-        ctx.fillStyle=gradient;
+        // // gradient.addColorStop('1.0', params.color3);
+        // // console.log(gradient)
+        
+        // ctx.fillStyle=gradient;
         
 
         for(var index=0; index < contour.length; index++){
+
+            // if(params.direction=='radial'){
+            //     ctx.fillStyle=params.color1;
+            // }else{
+            
+            if(params.direction!='radial'){
+                let lerp=index/contour.length;            
+                if(lerp<1-pc){
+                    ctx.fillStyle=lerpColor(params.color1, params.color2,lerp/(1-pc));
+                }else{
+                    ctx.fillStyle=lerpColor(params.color2, params.color3,(lerp-1+pc)/(pc))
+                }
+            }
 
             let trim="";
 
@@ -241,8 +268,24 @@ function init(params){
                 
 
             for(var i=0;i<trim.length;++i){
+                let x=contour[index]+i*spacing*pp;
+                let y=(index+1)*lineHeight;
+
+                if(params.direction=='radial'){
+                    let lerp=Math.pow(x,2)+Math.pow(y-canvas.height/2.0,2);
+                    lerp=Math.sqrt(lerp)/canvas.width;
+                    // lerp/=Math.pow(canvas.height/2.0,2);
+                    
+                    if(lerp<1-pc){
+                        ctx.fillStyle=lerpColor(params.color1, params.color2,lerp/(1-pc));
+                    }else{
+                        ctx.fillStyle=lerpColor(params.color2, params.color3,(lerp-1+pc)/(pc))
+                    }
+                }
+
+
                 let char=trim.charAt(i);
-                ctx.fillText(char,contour[index]+i*spacing*pp, (index+1)*lineHeight); 
+                ctx.fillText(char,x,y); 
 
             }
         }
