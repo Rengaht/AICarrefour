@@ -172,7 +172,7 @@ function init(params){
     let ctx=canvas.getContext("2d");
 
     // load image
-    const image = new Image();
+    let image = new Image();
     image.onload = drawText;
     image.src = `resources/${window._input_image || __face_files[params.faceset]}`;
 
@@ -191,15 +191,20 @@ function init(params){
 
     function drawText(){
         
-        if(!pixels){
-            pixels = loadPixels(image, canvas.width, canvas.height);
-        }
+        
 
         
         if(!contour){
+            if(!pixels){
+                pixels = loadPixels(image, canvas.width, canvas.height);
+            }
+            
             contour=getContour(pixels, canvas.width, canvas.height, lines.length);            
             lineHeight=canvas.height/lines.length;
             textSize=lineHeight-params.spacing*2;
+            
+            pixels=null;
+            image = null;
         }
 
         
