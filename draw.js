@@ -49,7 +49,7 @@ function getContour(pixels, width, height, count){
             if(start>width) break;
         }
 
-        output.push(start);
+        if(start<width) output.push(start);
     }
     console.log(output);
     return output;
