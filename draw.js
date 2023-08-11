@@ -96,19 +96,37 @@ function seperate(text, perline){
             let str=line.charAt(i);
             if(str.match(/[\u0000-\u00ff]/g)) count+=1;
             else count+=2;
+            // console.log(str.match(/[!,.?]/g));
 
             if(count>=perline*2){
-                let k=line.substring(start, i);
-                if(line.charAt(i+1).match(/^[a-zA-Z]*$/g) && line.charAt(i).match(/^[a-zA-Z]*$/g)) k+='-';
+                
+                // if end
+                let next=line.charAt(i+1);
+                console.log(next);
+                if(next.match(/[!,.?]/g)){
+                    let k=line.substring(start, i+1);
+                    tmp.push(k);
+                 
+                    i++;
+                    start=i;
+                    count=0;    
+                }else{
 
-                tmp.push(k);
-                start=i;
-                count=0;
+                    let k=line.substring(start, i+1);
+                    if(next.match(/^[a-zA-Z]*$/g) && str.match(/^[a-zA-Z]*$/g)) k+='-';
+
+                    tmp.push(k);
+                    start=i+1;
+                    count=0;
+                }
+            }else{
+                if(i==line.length-1) tmp.push(line.substring(start, line.length));
             }
+            
         }
         
     });
-    console.log(tmp);
+    // console.log(tmp);
 
     return tmp;
 }
@@ -265,7 +283,7 @@ function init(params){
             
             contour=getContour(pixels, canvas.width-boundary*2, canvas.height-boundary*2, lines.length);            
             lineHeight=(canvas.height-boundary*2)/lines.length;
-            textSize=lineHeight-params.spacing*2;
+            textSize=Math.min(lineHeight-params.spacing*2, canvas.width/params.perline/2.0);
             
             pixels=null;
             image = null;
