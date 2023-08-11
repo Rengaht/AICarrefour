@@ -55,12 +55,28 @@ function getContour(pixels, width, height, count){
     return output;
 }
 
-function seperate(text){
+function seperate(text, perline){
     let output=text;
     __seperator.forEach(el=>{
         output=output.split(el).join(`${el}|`);
     })
-    return output.split("|");
+
+    let lines=output.split("|");
+    let tmp=[];
+    // let perLine=8;
+    lines.forEach(line=>{
+        let len=line.length;
+        let count=Math.ceil(len/perline);
+        for(var i=0;i<count;++i){
+            let s=i*perline;
+            let e= Math.min((i+1)*perline,len);
+            // console.log(s,e);
+            tmp.push(line.substring(s,e));
+        }
+    });
+    // console.log(tmp);
+
+    return tmp;
 }
 
 
@@ -113,7 +129,7 @@ function intControl(){
 
 function getParameters(){
 
-    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset", "boundary"];
+    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset", "boundary", "perline"];
 
     let params={};
     _param_keys.forEach(key=>{
@@ -129,7 +145,7 @@ function getParameters(){
     if(val_params){
         val_params.innerHTML=Object.keys(params).map(key=>`${key} = ${params[key]}`).join('\n');
     }
-    console.log(params);
+    // console.log(params);
 
     return params;
 }
@@ -193,7 +209,7 @@ function init(params){
 
     let start_time=new Date().getTime();
 
-    let lines=seperate(text);
+    let lines=seperate(text, params.perline);
         
     let contour;
     let textSize;
