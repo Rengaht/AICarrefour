@@ -1,5 +1,5 @@
 <head>
-
+    <script type="text/javascript" src="CanvasRecorder.js"></script>
     <style>
         body{
             font-family: monospace;
@@ -25,6 +25,14 @@
         p{
             white-space: pre-line;
         }
+        #_recorder{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+        #_recorder>button{
+            flex:1;
+        }
     </style>
 </head>
 <body>
@@ -38,6 +46,7 @@
         <div> boundary <input id="_input_boundary" type="range" min="0" max="50" value="10"/> </div> 
         <div> speed <input id="_input_speed" type="range" min="1" max="10" value="5"/> </div> 
         <!-- <div> staytime <input id="_input_staytime" type="range" min="1" max="10" value="5"/> </div>  -->
+        
         
         <div> colorset
             <select id="_input_colorset">
@@ -80,10 +89,18 @@
         <!-- <div>
             image <input type="file" id="_input_image" accept="image/*"/>
         </div> -->
-        <!-- <div> breakline <input id="_input_breakline" type="checkbox" checked value="checked"/> </div>  -->
+        <div> time break <input id="_input_timebreak" type="checkbox" value="checked"/> </div> 
+        
         <button onclick="onGoClick()">Go!</button>
         <button onclick="onSnapshotClick()">Snapshot!</button>
-       
+       <div>
+        recorder
+        <div id="_recorder">
+            <button onclick="onRecord()">record</button>
+            <button onclick="onStopRecord()">stop</button>
+            <button onclick="onDownload()">download</button>
+        </div>
+    </div>
     </div>
     <p id="_val_params"></p>
     <canvas id="_canvas_head" width="600" height="600"></canvas>

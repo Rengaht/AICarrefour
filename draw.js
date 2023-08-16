@@ -113,7 +113,7 @@ function intControl(){
 
 function getParameters(){
 
-    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset", "boundary"];
+    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset", "boundary","timebreak"];
 
     let params={};
     _param_keys.forEach(key=>{
@@ -264,7 +264,12 @@ function init(params){
             trim=lines[index];
             let spacing=Math.min((canvas.width-boundary*2-contour[index]-textSize*4)/(trim.length+2), textSize*2.0);
             
-            let pp=0.2+(0.9)*Math.min(1.0, Math.abs(1.7*Math.sin((2.0-index/contour.length)*Math.PI*0.5+p)));
+            let pp;
+            if(params.timebreak){
+                pp=0.2+(0.9)*Math.min(1.0, Math.abs(1.7*Math.sin((2.0-index/contour.length)*Math.PI*0.5+p)));
+            }else{
+                pp=0.2+(0.9)*Math.abs(1.7*Math.sin((2.0-index/contour.length)*Math.PI*0.5+p));
+            }
             // let span=params.staytime+5.0/params.speed+index*0.2;
                 
 
@@ -381,3 +386,22 @@ window.onload=()=>{
     // });
 
 };
+
+
+function onRecord(){
+    if(window.__animation_recorder){
+        window.__animation_recorder.stop();
+    }
+    let canvas=document.getElementById('_canvas_head');
+    let recorder = new CanvasRecorder(canvas);    
+    recorder.start();
+    window.__animation_recorder=recorder;
+}
+
+function onStopRecord(){
+    if(window.__animation_recorder) window.__animation_recorder.stop();
+}
+
+function onDownload(){
+    if(window.__animation_recorder) window.__animation_recorder.save();
+}
