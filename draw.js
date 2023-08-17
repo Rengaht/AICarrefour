@@ -1,4 +1,5 @@
 const __demo_text="公寓大門外，供桌擺得齊，爸爸在旁邊，看著我燒紙錢。特價傳單，家樂福的獻禮，微涼的晚風，帶走了我們的祈禱。煙火升起，照亮了這晚夜，我們在這裡，為中元節祈福。家樂福特價，供桌上的禮物，希望他們喜歡，這些我們的小心意。微涼的晚風，吹散了煙火，爸爸在旁邊，默默地看著我。供桌擺在公寓大門外，我們在這裡，為中元節祈福。";
+const __demo_text2="Yo yo yo, 老爸就在廟門前的廣場，供品上插香，祈求平安保佑我們的家族，家樂福促銷型錄在手，節省錢的好幫手，55667788-，快來買一個，讓你享受無憂。Walking through the temple gates, feeling the vibe,The square is packed, people gather side by side,In front of the altar, we pay our respects,Burning incense, hoping for blessings and protects.";
 const __font="sans-serif";
 const __seperator=["，","。",",","."];
 const __face_files=[
@@ -55,19 +56,86 @@ function getContour(pixels, width, height, count){
     return output;
 }
 
-function seperate(text){
+function getTextLength(text){
+    let count=0;
+    for(var i=0;i<text.length;++i){
+        let str=text.substring(i,i+1);
+        if(str.match(/[\u0000-\u00ff]/g)) count+=0.5;
+        else count+=1;
+    }
+    return count;
+}
+
+function seperate(text, perline){
     let output=text;
     __seperator.forEach(el=>{
         output=output.split(el).join(`${el}|`);
     })
-    return output.split("|");
+
+    // let lines=output.split("|");
+    let lines=[text];
+    let tmp=[];
+    // let perLine=8;
+    lines.forEach(line=>{
+        let len=getTextLength(line);
+        if(len<perline*2){
+            tmp.push(line);
+            return;
+        }
+        // let count=Math.ceil(len/perline);
+
+        // for(var i=0;i<count;++i){
+        //     let s=i*perline;
+        //     let e= Math.min((i+1)*perline,len);
+        //     // console.log(s,e);
+        //     tmp.push(line.substring(s,e));
+        // }
+        let start=0;
+        let count=0;
+        for(var i=0;i<line.length;++i){
+            let str=line.charAt(i);
+            if(str.match(/[\u0000-\u00ff]/g)) count+=1;
+            else count+=2;
+            // console.log(str.match(/[!,.?]/g));
+
+            if(count>=perline*2){
+                
+                // if end
+                let next=line.charAt(i+1);
+                console.log(next);
+                if(next.match(/[!,.?]/g)){
+                    let k=line.substring(start, i+1);
+                    tmp.push(k);
+                 
+                    i++;
+                    start=i;
+                    count=0;    
+                }else{
+
+                    let k=line.substring(start, i+1);
+                    if(next.match(/^[a-zA-Z]*$/g) && str.match(/^[a-zA-Z]*$/g)) k+='-';
+
+                    tmp.push(k);
+                    start=i+1;
+                    count=0;
+                }
+            }else{
+                if(i==line.length-1) tmp.push(line.substring(start, line.length));
+            }
+            
+        }
+        
+    });
+    // console.log(tmp);
+
+    return tmp;
 }
 
 
 function intControl(){
 
     // set defulat text
-    document.getElementById("_input_text").value=__demo_text;
+    document.getElementById("_input_text").value=__demo_text2;
     
     // window._input_image=null;
     // let imageinput=document.getElementById("_input_image");
@@ -129,7 +197,7 @@ function getParameters(){
     if(val_params){
         val_params.innerHTML=Object.keys(params).map(key=>`${key} = ${params[key]}`).join('\n');
     }
-    console.log(params);
+    // console.log(params);
 
     return params;
 }
@@ -193,7 +261,7 @@ function init(params){
 
     let start_time=new Date().getTime();
 
-    let lines=seperate(text);
+    let lines=seperate(text, params.perline);
         
     let contour;
     let textSize;
@@ -215,7 +283,7 @@ function init(params){
             
             contour=getContour(pixels, canvas.width-boundary*2, canvas.height-boundary*2, lines.length);            
             lineHeight=(canvas.height-boundary*2)/lines.length;
-            textSize=lineHeight-params.spacing*2;
+            textSize=Math.min(lineHeight-params.spacing*2, canvas.width/params.perline/2.0);
             
             pixels=null;
             image = null;
