@@ -181,7 +181,7 @@ function intControl(){
 
 function getParameters(){
 
-    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset", "boundary","timebreak"];
+    const _param_keys=['spacing','speed', 'color1', 'color2', 'color3','text', 'direction', "faceset", "boundary","timebreak","perline"];
 
     let params={};
     _param_keys.forEach(key=>{
@@ -336,7 +336,7 @@ function init(params){
             if(params.timebreak){
                 pp=0.2+(0.9)*Math.min(1.0, Math.abs(1.7*Math.sin((2.0-index/contour.length)*Math.PI*0.5+p)));
             }else{
-                pp=0.2+(0.9)*Math.abs(1.7*Math.sin((2.0-index/contour.length)*Math.PI*0.5+p));
+                pp=0.2+(0.8)*Math.abs(Math.sin((2.0-index/contour.length)*Math.PI*0.5+p));
             }
             // let span=params.staytime+5.0/params.speed+index*0.2;
                 
